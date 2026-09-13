@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
+import { TODOS_TAG } from "@/lib/api";
 
 export type Todo = {
   id: number;
@@ -114,8 +116,62 @@ export async function POST(request: Request) {
     completed: false,
   };
   todos.push(todo);
+  revalidateTag(TODOS_TAG, { expire: 0 });
 
   return Response.json(todo, { status: 201 });
+}
+
+// PATCH /api/todos?id=3  body: { completed?: boolean, title?: string, description?: string }
+// Omit `completed` to toggle it.
+export async function PATCH(request: NextRequest) {
+  let body: Record<string, unknown> = {};
+  try {
+    body = ((await request.json()) as Record<string, unknown>) ?? {};
+  } catch {
+    // body is optional for a plain toggle
+  }
+
+  const id = parseId(request.nextUrl.searchParams.get("id") ?? body.id);
+  if (id === null) {
+    return Response.json(
+      { error: "'id' is required (query ?id=1 or JSON body { id: 1 })" },
+      { status: 400 },
+    );
+  }
+
+  const todo = todos.find((t) => t.id === id);
+  if (!todo) {
+    return Response.json({ error: "Todo not found" }, { status: 404 });
+  }
+
+  const { completed, title, description } = body;
+
+  if (completed !== undefined && typeof completed !== "boolean") {
+    return Response.json(
+      { error: "'completed' must be a boolean" },
+      { status: 400 },
+    );
+  }
+  if (title !== undefined && (typeof title !== "string" || !title.trim())) {
+    return Response.json(
+      { error: "'title' must be a non-empty string" },
+      { status: 400 },
+    );
+  }
+  if (description !== undefined && typeof description !== "string") {
+    return Response.json(
+      { error: "'description' must be a string" },
+      { status: 400 },
+    );
+  }
+
+  todo.completed = completed === undefined ? !todo.completed : completed;
+  if (typeof title === "string") todo.title = title.trim();
+  if (typeof description === "string") todo.description = description.trim();
+
+  revalidateTag(TODOS_TAG, { expire: 0 });
+
+  return Response.json(todo);
 }
 
 // DELETE /api/todos?id=3   (or body: { id: 3 })
@@ -145,5 +201,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   const [removed] = todos.splice(index, 1);
+  revalidateTag(TODOS_TAG, { expire: 0 });
+
   return Response.json(removed);
 }
