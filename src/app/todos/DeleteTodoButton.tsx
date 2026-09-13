@@ -18,7 +18,6 @@ export default function DeleteTodoButton({ id }: { id: number }) {
         alert(data.error ?? "Failed to delete todo");
         return;
       }
-      // Re-render the server component; the API already invalidated the cache.
       router.refresh();
     } finally {
       setPending(false);

@@ -9,7 +9,6 @@ type Props =
   | { mode: "create"; todo?: undefined }
   | { mode: "edit"; todo: Todo };
 
-// One form for both creating (POST) and editing (PATCH) a todo.
 export default function TodoForm({ mode, todo }: Props) {
   const router = useRouter();
   const [title, setTitle] = useState(todo?.title ?? "");
@@ -50,7 +49,6 @@ export default function TodoForm({ mode, todo }: Props) {
         return;
       }
 
-      // The API already invalidated the cache; go to the saved todo.
       router.push(`/todos/${data.id}`);
       router.refresh();
     } catch {

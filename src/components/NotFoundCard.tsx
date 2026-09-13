@@ -7,8 +7,6 @@ type Props = {
   backLabel: string;
 };
 
-// Shared UI for the not-found.tsx files. Server component: not-found pages
-// receive no props, so each one passes its own copy here.
 export default function NotFoundCard({
   title,
   message,

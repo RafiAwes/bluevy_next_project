@@ -9,7 +9,6 @@ export type Todo = {
   completed: boolean;
 };
 
-// In-memory data store. Resets whenever the server restarts.
 const todos: Todo[] = [
   {
     id: 1,
@@ -53,9 +52,6 @@ function parseId(raw: unknown): number | null {
   return Number.isInteger(id) && id > 0 ? id : null;
 }
 
-// GET /api/todos                      -> all todos
-// GET /api/todos?completed=true|false -> filtered by status
-// GET /api/todos?id=3                 -> single todo
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
@@ -81,7 +77,6 @@ export async function GET(request: NextRequest) {
   return Response.json(result);
 }
 
-// POST /api/todos  body: { title: string, description?: string }
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -121,15 +116,11 @@ export async function POST(request: Request) {
   return Response.json(todo, { status: 201 });
 }
 
-// PATCH /api/todos?id=3  body: { completed?: boolean, title?: string, description?: string }
-// Omit `completed` to toggle it.
 export async function PATCH(request: NextRequest) {
   let body: Record<string, unknown> = {};
   try {
     body = ((await request.json()) as Record<string, unknown>) ?? {};
-  } catch {
-    // body is optional for a plain toggle
-  }
+  } catch {}
 
   const id = parseId(request.nextUrl.searchParams.get("id") ?? body.id);
   if (id === null) {
@@ -174,7 +165,6 @@ export async function PATCH(request: NextRequest) {
   return Response.json(todo);
 }
 
-// DELETE /api/todos?id=3   (or body: { id: 3 })
 export async function DELETE(request: NextRequest) {
   let raw: unknown = request.nextUrl.searchParams.get("id");
 
@@ -182,9 +172,7 @@ export async function DELETE(request: NextRequest) {
     try {
       const body = (await request.json()) as { id?: unknown };
       raw = body?.id;
-    } catch {
-      // no usable body; fall through to validation below
-    }
+    } catch {}
   }
 
   const id = parseId(raw);

@@ -26,7 +26,6 @@ export default function ToggleTodoButton({
         alert(data.error ?? "Failed to update todo");
         return;
       }
-      // Re-render the server component; the API already invalidated the cache.
       router.refresh();
     } finally {
       setPending(false);

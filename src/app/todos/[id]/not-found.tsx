@@ -1,6 +1,5 @@
 import NotFoundCard from "@/components/NotFoundCard";
 
-// Rendered when todos/[id]/page.tsx calls notFound() for an unknown id.
 export default function TodoNotFound() {
   return (
     <NotFoundCard

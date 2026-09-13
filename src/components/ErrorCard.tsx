@@ -11,8 +11,6 @@ type Props = {
   backLabel: string;
 };
 
-// Shared UI for the error.tsx boundaries. Each boundary passes its own
-// heading and "back" link so the message fits the page that failed.
 export default function ErrorCard({
   error,
   retry,
@@ -21,7 +19,6 @@ export default function ErrorCard({
   backLabel,
 }: Props) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
