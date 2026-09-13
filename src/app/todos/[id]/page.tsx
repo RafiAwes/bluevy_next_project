@@ -30,15 +30,23 @@ export default async function TodoPage({ params }: PageProps<"/todos/[id]">) {
           <p className="mb-6 text-zinc-600 dark:text-zinc-400">
             {todo.description}
           </p>
-          <span
-            className={
-              todo.completed
-                ? "inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300"
-                : "inline-block rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
-            }
-          >
-            {todo.completed ? "Completed" : "Pending"}
-          </span>
+          <div className="flex items-center justify-between gap-4">
+            <span
+              className={
+                todo.completed
+                  ? "inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300"
+                  : "inline-block rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+              }
+            >
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+            <Link
+              href={`/todos/${todo.id}/edit`}
+              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              Edit
+            </Link>
+          </div>
         </div>
       </div>
     </main>

@@ -9,9 +9,17 @@ export default async function TodosPage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-zinc-50 px-4 py-16 dark:bg-zinc-950">
       <div className="w-full max-w-2xl">
-        <h1 className="font-luckiest mb-6 text-4xl tracking-wide text-zinc-900 dark:text-zinc-50">
-          My Todos
-        </h1>
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <h1 className="font-luckiest text-4xl tracking-wide text-zinc-900 dark:text-zinc-50">
+            My Todos
+          </h1>
+          <Link
+            href="/todos/new"
+            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          >
+            + New todo
+          </Link>
+        </div>
 
         <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <table className="w-full text-left text-sm">
@@ -23,7 +31,7 @@ export default async function TodosPage() {
                 <th scope="col" className="px-4 py-3">
                   Title
                 </th>
-                <th scope="col" className="w-56 px-4 py-3 text-right">
+                <th scope="col" className="w-64 px-4 py-3 text-right">
                   Actions
                 </th>
               </tr>
@@ -61,6 +69,12 @@ export default async function TodosPage() {
                           className="rounded-md px-2 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                         >
                           View
+                        </Link>
+                        <Link
+                          href={`/todos/${todo.id}/edit`}
+                          className="rounded-md px-2 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                        >
+                          Edit
                         </Link>
                         <ToggleTodoButton
                           id={todo.id}
