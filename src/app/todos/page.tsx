@@ -1,19 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import type { Todo } from "@/app/api/todos/route";
+import { getTodos } from "@/lib/api";
 
-export default function TodosPage() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/todos")
-      .then((res) => res.json())
-      .then((data: Todo[]) => setTodos(data))
-      .finally(() => setLoading(false));
-  }, []);
+export default async function TodosPage() {
+  const todos = await getTodos();
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-zinc-50 px-4 py-16 dark:bg-zinc-950">
@@ -22,35 +11,27 @@ export default function TodosPage() {
           My Todos
         </h1>
 
-        {loading ? (
-          <p className="text-zinc-500 dark:text-zinc-400">Loading...</p>
-        ) : (
-          <>
-            <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-              {todos.map((todo) => (
-                <li key={todo.id}>
-                  <Link
-                    href={`/todos/${todo.id}`}
-                    className="flex items-center gap-3 px-4 py-3 text-zinc-800 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                      {todo.id}
-                    </span>
-                    <span
-                      className={todo.completed ? "line-through opacity-60" : ""}
-                    >
-                      {todo.title}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+        <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+          {todos.map((todo) => (
+            <li key={todo.id}>
+              <Link
+                href={`/todos/${todo.id}`}
+                className="flex items-center gap-3 px-4 py-3 text-zinc-800 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                  {todo.id}
+                </span>
+                <span className={todo.completed ? "line-through opacity-60" : ""}>
+                  {todo.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-            <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
-              {todos.length} todo{todos.length === 1 ? "" : "s"}
-            </p>
-          </>
-        )}
+        <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
+          {todos.length} todo{todos.length === 1 ? "" : "s"}
+        </p>
       </div>
     </main>
   );
